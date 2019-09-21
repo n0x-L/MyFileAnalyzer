@@ -91,7 +91,7 @@ print("\n--- File Type ---", '\n', getFileType.stdout)
 # 5 Interesting strings within the file
 getUnicodeStr = subprocess.run(["strings", "-a", "-el", aFile], capture_output=True, check=True, text=True)
 print("FILE CREATED: strings.txt")
-print(getUnicodeStr.stdout, file=open("strings.txt", "w"))
+#print(getUnicodeStr.stdout, file=open("strings.txt", "w"))
 
 # 6 Symbols defined in the executable
 
