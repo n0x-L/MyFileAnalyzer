@@ -38,7 +38,7 @@ absoluteNumerics = {'0': 'No Permission',
                     '6':'Read+Write',
                     '7':'Read+Write+Execute'}
 
-aFile = input('\nFile to analyze (ie test.txt): ')
+aFile = raw_input('\nFile to analyze (ie test.txt): ')
 
 # 1 Get the File size
 getFileSize = subprocess.run(["du", "-h", aFile], capture_output=True, check=True, text=True)
