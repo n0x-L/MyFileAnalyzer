@@ -1,5 +1,4 @@
 # Python 3.7
-# Running on macOS
 
 """
 1     File size
@@ -26,7 +25,7 @@
 15    Compiler used to compile the program
 16    What happens differently between the first and second times printf is called
 """
-import os, subprocess, floss
+import os, subprocess
 
 results = []
 absoluteNumerics = {'0': 'No Permission',
@@ -38,18 +37,18 @@ absoluteNumerics = {'0': 'No Permission',
                     '6':'Read+Write',
                     '7':'Read+Write+Execute'}
 
-aFile = raw_input('\nFile to analyze (ie test.txt): ')
+aFile = input('\nFile to analyze (ie test.txt): ')
 
 # 1 Get the File size
 getFileSize = subprocess.run(["du", "-h", aFile], capture_output=True, check=True, text=True)
 getFileSize = getFileSize.stdout
 
-# output formatting
 if aFile in getFileSize:
     getFileSize = getFileSize.replace(aFile, '')
 print("\n--- File Size ---\n", getFileSize)
 
-# 2 Get File Attributes (owner, group, permissions, timestamps, &c)
+# 2 Get File Attributes
+# Owner, Group, Timestamps
 getFileAttributes = subprocess.run(["ls", "-l", aFile], capture_output=True, check=True, text=True)
 fileAttributesList = getFileAttributes.stdout.split()
 ownerName = fileAttributesList[2]
@@ -64,7 +63,9 @@ print("Owner Name:", ownerName)
 print("Group Name or ID:", groupID)
 print("Last Modified:", lastModified_Month, lastModified_Day, lastModified_Hour)
 
-getFilePermOctal = subprocess.run(["stat", "-f", "'%A'", aFile], capture_output=True, check=True, text=True)
+# Permissions
+# stat -c "%a %n" 
+getFilePermOctal = subprocess.run(["stat", "-c", "'%a %n'", aFile], capture_output=True, check=True, text=True)
 fileOctal = getFilePermOctal.stdout
 owner = fileOctal[1]
 group = fileOctal[2]
@@ -74,7 +75,7 @@ print("Owner Permissions:", absoluteNumerics[owner])
 print("Group Permissions:", absoluteNumerics[group])
 print("All Others Permissions:", absoluteNumerics[other])
 
-# 3 Get extended File Attributes
+# 3 Extended attributes
 getExtendedAttr = subprocess.run(["xattr", aFile], capture_output=True, check=True, text=True)
 getExtendedAttr = getExtendedAttr.stdout
 print('\n--- Extended File Attributes ---')
@@ -89,8 +90,8 @@ getFileType = subprocess.run(["file", "-b", aFile], capture_output=True, check=T
 print("\n--- File Type ---", '\n', getFileType.stdout)
 
 # 5 Interesting strings within the file
-getUnicodeStr = subprocess.run(["strings", "-a", "-el", aFile], capture_output=True, check=True, text=True)
-print("FILE CREATED: strings.txt")
+#getUnicodeStr = subprocess.run(["strings", "-a", "-el", aFile], capture_output=True, check=True, text=True)
+#print("FILE CREATED: strings.txt")
 #print(getUnicodeStr.stdout, file=open("strings.txt", "w"))
 
 # 6 Symbols defined in the executable
