@@ -1,0 +1,15 @@
+# nm information
+$ nm <fileName>
+$ nm -n <fileName>     # display all symbols in executable in sorted order of address
+A :  Global absolute symbol.
+a  :  Local absolute symbol.
+B : Global bss symbol.
+b : Local bss symbol.
+D : Global data symbol.
+d : Local data symbol.
+f : Source file name symbol.
+L : Global thread-local symbol (TLS).
+l : Static thread-local symbol (TLS).
+T : Global text symbol.
+t  : Local text symbol.
+U : Undefined symbol.
