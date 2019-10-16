@@ -153,9 +153,12 @@ def get_File_Required_Libraries(aFile):
 
 
 # 9 System Calls Performed when Run
+# to trace all system calls (strace) involving memory mapping: sudo strace -q -e trace=memory df -h
+# trace all system calls (strace) involving process mgmt: sudo strace -q -e trace=process df -h	
+# 
 def get_File_System_Calls(aFile):
   runFileFormat = "./{}".format(aFile)
-  getSysCalls = subprocess.run(["strace", runFileFormat], capture_output=True, check=True, text=True)
+  getSysCalls = subprocess.run(["strace", "-c", runFileFormat], capture_output=True, check=True, text=True)
   sysCallsText = getSysCalls.stdout
   print(sysCallsText, file=open("systemCallTrace.txt", "w"))
   print("\n--- System Calls ---\n")
@@ -173,7 +176,13 @@ def get_File_Library_Calls(aFile):
 
 
 # 11 How the system and library calls differ, and why
-
+def get_System_Library_Delta(aFile):
+  runFileFormat = "./{}".format(aFile)
+  sysCallNames = ">(awk '$1 ~ /^-----/ {toprint = !toprint; next} {if (toprint) print $NF}')" 
+  part4 = ">/dev/null 2>/dev/null"
+  getSysNames = subprocess.run(["strace", "-o", ">(awk '$1 ~ /^-----/ {toprint = !toprint; next} {if (toprint) print $NF}')", "-c", runFileFormat, ">/dev/null 2>/dev/null"], capture_output=True, check=True, text=True)
+  print('System Call Names:')
+  print(getSysNames.stdout)
 
 
 # 12 Executable sections and the Information they Contain
@@ -212,6 +221,7 @@ def main(argv):
   get_File_Required_Libraries(aFile)
   get_File_System_Calls(aFile)
   get_File_Library_Calls(aFile)
+  get_System_Library_Delta(aFile)
 
 
 # Call main, pass in command line argument given
