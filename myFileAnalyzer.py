@@ -53,9 +53,23 @@ absoluteNumerics = {'0': 'No Permission',
                     '6':'Read+Write',
                     '7':'Read+Write+Execute'}
 
+# Helper function: Subprocess.run 
+def run_subprocess(pyVersion, argList):
+  if pyVersion == '3.5':
+    subprocess.run(argList, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+  elif pyVersion == '3.7':
+    subprocess.run(argList, capture_output=True, check=True, text=True)  
+
 
 # 1 Get the File size
 def get_FileSize(aFile):
+  aFile = aFile
+  getFileSize = subprocess.run(['du', '-h', aFile], check=True, stdout=subprocess.PIPE, universal_newlines=True)
+  getFileSize = getFileSize.stdout
+  if aFile in getFileSize:
+    getFileSize = getFileSize.replace(aFile, '')
+    print("\n--- File Size ---\n", getFileSize)
+  """
   aFile = aFile
   getFileSize = subprocess.run(["du", "-h", aFile], capture_output=True, check=True, text=True)
   getFileSize = getFileSize.stdout
@@ -63,6 +77,7 @@ def get_FileSize(aFile):
   if aFile in getFileSize:
     getFileSize = getFileSize.replace(aFile, '')
     print("\n--- File Size ---\n", getFileSize)
+  """
 
 # 2 Get File Attributes
 # Owner, Group, Timestamps
@@ -209,9 +224,18 @@ def main(argv):
   
   args = parser.parse_args()
   aFile = args.file
+  
+  # Set up sub process arguements based on Python Version
+  # 3.5-3.6.5
+
+  check=True, stdout=subprocess.PIPE, universal_newlines=True
+
+  # 3.7
+  capture_output=True, check=True, text=True
 
   # call functions
   get_FileSize(aFile)
+  """
   get_FileAttributes(aFile)
   get_FilePermissions(aFile)
   get_FileType(aFile)
@@ -222,6 +246,7 @@ def main(argv):
   get_File_System_Calls(aFile)
   get_File_Library_Calls(aFile)
   get_System_Library_Delta(aFile)
+  """
 
 
 # Call main, pass in command line argument given
