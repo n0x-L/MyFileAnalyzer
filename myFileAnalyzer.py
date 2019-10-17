@@ -228,10 +228,10 @@ def main(argv):
   # Set up sub process arguements based on Python Version
   # 3.5-3.6.5
 
-  check=True, stdout=subprocess.PIPE, universal_newlines=True
+  #check=True, stdout=subprocess.PIPE, universal_newlines=True
 
   # 3.7
-  capture_output=True, check=True, text=True
+  #capture_output=True, check=True, text=True
 
   # call functions
   get_FileSize(aFile)
