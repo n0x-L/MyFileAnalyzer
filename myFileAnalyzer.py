@@ -235,9 +235,11 @@ def main(argv):
 
   # call functions
   get_FileSize(aFile)
-  """
+
   get_FileAttributes(aFile)
+  
   get_FilePermissions(aFile)
+  """
   get_FileType(aFile)
   get_Internal_File_Symbols(aFile)
   get_FileHexdump(aFile)
