@@ -42,6 +42,9 @@ ltrace … trace library calls
 readelf … ELF executable information
 objdump … assembly code and more
 ndisasm … also disassembly, but better with unstructured binary code
+
+
+NOTE: Mach-O is the native executable format of binaries in OS X and is the preferred format for shipping code.
 """
 import os, subprocess, sys, argparse
 
@@ -58,7 +61,6 @@ absoluteNumerics = {'0': 'No Permission',
 
 # 1 Get the File size
 def get_FileSize(aFile):
-  aFile = aFile
   getFileSize = subprocess.run(["du", "-h", aFile], capture_output=True, check=True, text=True)
   getFileSize = getFileSize.stdout
 
@@ -149,11 +151,20 @@ def get_External_File_Symbols(aFile):
 
 
 # 8 Required Libraries
+# otool -L
 def get_File_Required_Libraries(aFile):
-  getReqLibraries = subprocess.run(["ldd", "-v", aFile], capture_output=True, check=True, text=True)
   print("\n--- Required Libraries ---\n")
-  print(getReqLibraries.stdout)
 
+  try:
+    getReqLibraries = subprocess.run(["ldd", "-v", aFile], capture_output=True, check=True, text=True)
+    print(getReqLibraries.stdout)
+  except subprocess.CalledProcessError as er:
+    print(er)
+
+  except FileNotFoundError as e:
+    print("Error")
+    print(e)
+    
 
 # 9 System Calls Performed when Run
 # to trace all system calls (strace) involving memory mapping: sudo strace -q -e trace=memory df -h
@@ -206,14 +217,31 @@ def get_System_Library_Delta(aFile):
 # 16 What Happens Differently Between the First and Second times 'printf' is Called
 
 
+
+def print_welcome():
+  print("\n\t\t\t###########################################################")
+  print("\t\t\t\t A program for analyzing binaries")
+  print("\t\t\t**** made by Amanda N. Leeson, master of the universe ****")
+  print("\t\t\t###########################################################")
+
+def exit():
+  print("\n")
+  print("Program complete, exiting....")
+  print("Goodbye!")
+  sys.exit(0)
+
+
+
 # Main
 def main(argv):
   aFile = ""
-  parser = argparse.ArgumentParser(description='A program for analyzing binaries.')
-  parser.add_argument("--file", default=1, type=str, help="The file name (with extension) you wish to analyze.")
-  
+  parser = argparse.ArgumentParser(description='A simply python program for analyzing binaries.')
+  parser.add_argument("-f", "--file", required=True, type=str, help="The file name (with extension) you wish to analyze.")
   args = parser.parse_args()
   aFile = args.file
+
+  # print welcome (really its for keeping track of output)
+  print_welcome()
 
   # call functions
   get_FileSize(aFile)
@@ -224,10 +252,16 @@ def main(argv):
   get_Internal_File_Symbols(aFile)
   get_FileHexdump(aFile)
   get_External_File_Symbols(aFile)
+
+  # Commands not working:
+  # ldd, strace, and ltrace not built for OSX
   get_File_Required_Libraries(aFile)
   #get_File_System_Calls(aFile)
   #get_File_Library_Calls(aFile)
+
+  # Not implemented yet:
   #get_System_Library_Delta(aFile)
+  exit()
 
 
 # Call main, pass in command line argument given
