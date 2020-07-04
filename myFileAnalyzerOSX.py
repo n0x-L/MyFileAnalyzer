@@ -141,24 +141,31 @@ def get_FileType(aFile, verbose):
 # 5 Interesting strings within the file
 # use option '-el' to get unicode strings
 def get_FileStrings(aFile, verbose):
-  getASCII = subprocess.run(["strings", "-a", aFile], capture_output=True, check=True, text=True)
-  stringFileText = getASCII.stdout
+  try:
+    getASCII = subprocess.run(["strings", "-a", aFile], capture_output=True, check=True, text=True)
+    stringFileText = getASCII.stdout
 
-  if verbose:
-    print("--- Extracted ASCII Strings ---")
-    print("output too large, sending to file:")
+    if verbose:
+      print("--- Extracted ASCII Strings ---")
+      print("output too large, sending to file:")
   
-  make_file("asciiStrings", stringFileText)
+    make_file("asciiStrings", stringFileText)
+  
+  except :
+    print("Could not run strings method")
 
 # 6 Symbols Defined in the Executable
 def get_Internal_File_Symbols(aFile, verbose):
-  getSymbols = subprocess.run(["nm", aFile], capture_output=True, check=True, text=True)
-  symbolText = getSymbols.stdout
+  try:
+    getSymbols = subprocess.run(["nm", aFile], capture_output=True, check=True, text=True)
+    symbolText = getSymbols.stdout
 
-  if verbose:
-    print("\n--- Symbols Defined in Executable ---", symbolText)
-  else:
-    make_file("symbols", symbolText)
+    if verbose:
+      print("\n--- Symbols Defined in Executable ---", symbolText)
+    else:
+      make_file("symbols", symbolText)
+  except:
+    print("Could not run internal file symbols method")
 
 # Get hexdump
 def get_FileHexdump(aFile, verbose):
@@ -173,13 +180,16 @@ def get_FileHexdump(aFile, verbose):
 # 7 Symbols Imported into the Executable
 # display only external symbols of executable
 def get_External_File_Symbols(aFile, verbose):
-  getExternalSymbols = subprocess.run(["nm", "-g", aFile], capture_output=True, check=True, text=True)
-  externalSymbols = getExternalSymbols.stdout
+  try:
+    getExternalSymbols = subprocess.run(["nm", "-g", aFile], capture_output=True, check=True, text=True)
+    externalSymbols = getExternalSymbols.stdout
 
-  if verbose:
-    print("\n--- External Symbols ---\n output too large, sending to file")
+    if verbose:
+      print("\n--- External Symbols ---\n output too large, sending to file")
 
-  make_file("externalSymbols", externalSymbols)
+    make_file("externalSymbols", externalSymbols)
+  except:
+    print("Could not run external file sybols call")
 
 # 8 Required Libraries - *NOT WORKING FOR OSX YET*
 # otool -L
